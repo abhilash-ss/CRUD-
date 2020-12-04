@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import bcrypt from 'bcrypt';
+import { Op } from 'sequelize';
 import Users from '../../model/Users';
 
 const router = Router();
@@ -8,16 +9,16 @@ router.post('/addUser', async (req: any, res) => {
   try {
     const { userEmail, password, firstName, lastName, role } = req.body;
     if (!req.user || req.user.role !== 'admin') {
-      return res.status(401).json({ success: false, message: 'You Are Not Allowed To Add User' });
+      return res.status(200).json({ success: false, message: 'You Are Not Allowed To Add User' });
     }
     if (role === 'admin') {
-      return res.status(401).json({ success: false, message: 'You cant Add An Admin' });
+      return res.status(200).json({ success: false, message: 'You cant Add An Admin' });
     }
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password, salt);
     const user = await Users.findOne({ where: { email: userEmail } });
     if (user) {
-      return res.status(500).json({ success: false, message: 'User already exist' });
+      return res.status(200).json({ success: false, message: 'User already exist' });
     }
     const CR_USER = await Users.create({ email: userEmail, password: hashedPassword, role, lastName, firstName });
     await CR_USER.save();
@@ -45,10 +46,23 @@ router.post('/addAdmin', async (req: any, res) => {
   }
 });
 
-router.post('/getUsers', async (req: any, res) => {
+router.get('/getUsers', async (req: any, res) => {
   try {
     const users = await Users.findAll();
     return res.json({ success: true, users, message: 'Fetch users successfully' });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: 'something went wrong' });
+  }
+});
+
+router.post('/deleteUser', async (req: any, res) => {
+  try {
+    const { id } = req.body;
+    const deletedUser = await Users.destroy({ where: { id: { [Op.eq]: id } } });
+    if (!deletedUser) {
+      return res.json({ success: false, message: 'something went wrong' });
+    }
+    return res.json({ success: true, message: `Delete user ${id} successfully` });
   } catch (error) {
     return res.status(500).json({ success: false, message: 'something went wrong' });
   }

@@ -6,7 +6,7 @@ import LoginForm from 'src/components/LoginForm';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 
-import styles from 'src/css/Home.module.css';
+import styles from 'src/css/styles.module.css';
 
 const Home: FunctionComponent = () => {
   const [showAlert, setShowAlert] = useState(false);
