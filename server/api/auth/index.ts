@@ -18,7 +18,7 @@ router.post('/login', (req: any, res, next) => {
 
 router.post('/logout', (req: any, res, next) => {
   req.logout();
-  res.json({ message: 'logged out' });
+  res.json({ success: true, message: 'logged out' });
 });
 
 export default router;

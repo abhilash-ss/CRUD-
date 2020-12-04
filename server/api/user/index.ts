@@ -49,6 +49,9 @@ router.post('/addAdmin', async (req: any, res) => {
 router.get('/getUsers', async (req: any, res) => {
   try {
     const users = await Users.findAll();
+    if (!req.user || req.user.role !== 'admin') {
+      return res.status(200).json({ success: false, message: 'You Are Not Allowed To Fetch User list' });
+    }
     return res.json({ success: true, users, message: 'Fetch users successfully' });
   } catch (error) {
     return res.status(500).json({ success: false, message: 'something went wrong' });
@@ -59,6 +62,9 @@ router.post('/deleteUser', async (req: any, res) => {
   try {
     const { id } = req.body;
     const deletedUser = await Users.destroy({ where: { id: { [Op.eq]: id } } });
+    if (!req.user || req.user.role !== 'admin') {
+      return res.status(200).json({ success: false, message: 'You Are Not Allowed To Delete User' });
+    }
     if (!deletedUser) {
       return res.json({ success: false, message: 'something went wrong' });
     }
