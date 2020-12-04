@@ -68,7 +68,7 @@ router.post('/deleteUser', async (req: any, res) => {
     if (!deletedUser) {
       return res.json({ success: false, message: 'something went wrong' });
     }
-    return res.json({ success: true, message: `Delete user ${id} successfully` });
+    return res.json({ success: true, message: `Deleted user ${id} successfully` });
   } catch (error) {
     return res.status(500).json({ success: false, message: 'something went wrong' });
   }

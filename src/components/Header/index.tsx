@@ -12,6 +12,7 @@ const Header: FunctionComponent = () => {
       const res = (await axios.post('api/auth/logout')).data;
       if (res.success) {
         router.push('/');
+        localStorage.removeItem('role');
       }
     } catch (error) {
       console.log(error);
